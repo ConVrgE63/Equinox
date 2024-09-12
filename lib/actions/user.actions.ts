@@ -9,14 +9,14 @@ export const signIn = async ({ email, password }: signInProps) => {
       const { account } = await createAdminClient();
       const response = await account.createEmailPasswordSession(email, password);
   
-    //   cookies().set("appwrite-session", session.secret, {
-    //     path: "/",
-    //     httpOnly: true,
-    //     sameSite: "strict",
-    //     secure: true,
-    //   });
+      // cookies().set("appwrite-session", session.secret, {
+      //   path: "/",
+      //   httpOnly: true,
+      //   sameSite: "strict",
+      //   secure: true,
+      // });
   
-    //   const user = await getUserInfo({ userId: session.userId }) 
+      // const user = await getUserInfo({ userId: session.userId }) 
   
       return parseStringify(response);
     } catch (error) {
@@ -54,13 +54,25 @@ export const signUp = async (userData: SignUpParams) => {
 export async function getLoggedInUser() {
   try {
     const { account } = await createSessionClient();
-    const user =  await account.get();
+    const user = await account.get();
+
+    // const user = await getUserInfo({ userId: result.$id})
+
     return parseStringify(user);
   } catch (error) {
+    console.log(error)
     return null;
   }
 }
-function getUserInfo(arg0: { userId: string; }) {
-    throw new Error("Function not implemented.");
+export const logoutAccount = async () => {
+  try {
+    const { account } = await createSessionClient();
+
+    cookies().delete('appwrite-session');
+
+    await account.deleteSession('current');
+  } catch (error) {
+    return null;
+  }
 }
 
